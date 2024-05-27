@@ -1,4 +1,5 @@
-import "../styles/globals.css";
+"use client";
+
 import Home from "./home/home";
 
 // `app/page.tsx` is the UI for the `/` URL
