@@ -11,7 +11,7 @@ function Search() {
             <SearchIcon />
           </Button>
         </InputLeftAddon>
-        <Input placeholder="Search for songs in Japanese " />
+        <Input placeholder="Search for songs " />
       </InputGroup>
     </div>
   );
