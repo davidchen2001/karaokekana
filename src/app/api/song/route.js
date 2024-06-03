@@ -1,24 +1,23 @@
-import { configDotenv } from "dotenv";
 const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 
-import { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getLyrics, getSong } from "genius-lyrics-api";
 
 export async function GET(request) {
-  const { title } = request.nextUrl.searchParams.get("title");
+  const title = request.nextUrl.searchParams.get("title");
+  const artist = request.nextUrl.searchParams.get("artist");
+
   const options = {
     apiKey: accessToken,
     title: title,
+    artist: artist,
     optimizeQuery: true,
   };
 
-  getLyrics(options)
-    .then((lyrics) => {
-      console.log(lyrics);
-      return Response.json({ id: 200, text: "Hello" });
-    })
-    .err((error) => {
-      console.log(error);
-      return Response.json({ id: 404, text: "Not Found" });
-    });
+  try {
+    const lyrics = await getLyrics(options);
+    return NextResponse.json({ id: 200, text: lyrics });
+  } catch (err) {
+    return NextResponse.json({ id: 500, text: err });
+  }
 }
