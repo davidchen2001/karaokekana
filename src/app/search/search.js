@@ -1,19 +1,37 @@
-import React from "react";
-import { Input, InputLeftAddon, InputGroup, Button } from "@chakra-ui/react";
+import React, { useState } from "react";
+import {
+  Input,
+  InputLeftAddon,
+  InputGroup,
+  Button,
+  FormControl,
+} from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 function Search() {
+  const [input, setInput] = useState("");
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const isError = input === "";
+
   return (
-    <div>
+    <FormControl isInvalid={isError}>
       <InputGroup>
         <InputLeftAddon>
           <Button>
             <SearchIcon />
           </Button>
         </InputLeftAddon>
-        <Input placeholder="Search for songs " />
+        <Input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Search for songs "
+        />
       </InputGroup>
-    </div>
+    </FormControl>
   );
 }
 
