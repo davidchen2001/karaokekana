@@ -1,37 +1,74 @@
 import React, { useState } from "react";
+
+import { useForm } from "react-hook-form";
 import {
   Input,
-  InputLeftAddon,
   InputGroup,
   Button,
   FormControl,
+  VStack,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+
+import axios from "axios";
 
 function Search() {
-  const [input, setInput] = useState("");
+  const [song, setSong] = useState("");
+  const [artist, setArtist] = useState("");
 
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
+  const {
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const handleSongChange = (e) => {
+    setSong(e.target.value);
   };
 
-  const isError = input === "";
+  const handleArtistChange = (e) => {
+    setArtist(e.target.value);
+  };
+
+  const onSubmit = () => {
+    const getData = async () => {
+      const response = await fetch(`/api/song?title=${song}&artist=${artist}`, {
+        method: "GET",
+      });
+      return response.json();
+    };
+    getData().then((data) => {
+      console.log(data);
+    });
+  };
 
   return (
-    <FormControl isInvalid={isError}>
-      <InputGroup>
-        <InputLeftAddon>
-          <Button>
-            <SearchIcon />
-          </Button>
-        </InputLeftAddon>
-        <Input
-          value={input}
-          onChange={handleInputChange}
-          placeholder="Search for songs "
-        />
-      </InputGroup>
-    </FormControl>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl isRequired>
+        <InputGroup>
+          <VStack align="stretch">
+            <Input
+              value={song}
+              onChange={handleSongChange}
+              placeholder="Search for song "
+            />
+
+            <Input
+              value={artist}
+              onChange={handleArtistChange}
+              placeholder="Search for artist "
+            />
+
+            <Button
+              mt={4}
+              colorScheme="teal"
+              isLoading={isSubmitting}
+              type="submit"
+            >
+              Search
+            </Button>
+          </VStack>
+        </InputGroup>
+      </FormControl>
+    </form>
   );
 }
 

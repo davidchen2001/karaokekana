@@ -1,13 +1,13 @@
 import React from "react";
 import Search from "../search/search";
 
-import { HStack, SimpleGrid } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
 export default function home() {
   return (
-    <div>
+    <Box p={4}>
       Japanese lyrics available in Hiragana, Romanji, and Kanji
       <Search />
-    </div>
+    </Box>
   );
 }
