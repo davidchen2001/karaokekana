@@ -34,7 +34,7 @@ function Search() {
       const response = await fetch(`/api/song?title=${song}&artist=${artist}`, {
         method: "GET",
       });
-      return response.json();
+      return response;
     };
     getData().then((data) => {
       console.log(data);

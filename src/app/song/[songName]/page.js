@@ -17,8 +17,8 @@ function Song() {
   const params = useParams();
 
   const param = JSON.stringify(params["songName"]);
-  const song = param.split("-")[0];
-  const artist = param.split("-")[1];
+  const song = param.split("-")[0].replace('"', "");
+  const artist = param.split("-")[1].replace('"', "");
 
   const [hiragana, setHiragana] = useState("");
   const [romanji, setRomanji] = useState("");
@@ -26,10 +26,8 @@ function Song() {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await fetch(`/api/song?title=${song}&artist=${artist}`, {
-        method: "GET",
-      });
-      return response.json();
+      const response = await fetch(`/api/song?title=${song}&artist=${artist}`);
+      return response;
     };
     getData().then((data) => {
       console.log(data);
