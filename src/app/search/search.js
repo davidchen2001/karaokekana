@@ -9,11 +9,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function Search() {
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -37,6 +38,8 @@ function Search() {
     };
     getData().then((data) => {
       console.log(data);
+      const route = `${song}-${artist}`;
+      //router.push("song/" + route);
     });
   };
 
