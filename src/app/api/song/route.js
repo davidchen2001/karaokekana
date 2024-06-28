@@ -2,7 +2,7 @@ const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 
 import { NextResponse } from "next/server";
 import { getLyrics } from "genius-lyrics-api";
-import { toKana } from "wanakana";
+import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
 const language = new Languages();
 
@@ -11,9 +11,9 @@ const Client = new Genius.Client();
 const INTRO = "[Intro]";
 
 function parseHiragana(romaji) {
-  const words = romaji.split(/\n/);
+  const lines = romaji.split(/\n/);
   let parsedHiragana = "";
-  words.forEach((element) => {
+  lines.forEach((element) => {
     if (
       element.includes("[") ||
       element.includes("]") ||
@@ -32,6 +32,8 @@ function parseHiragana(romaji) {
         parsedHiragana += " " + element;
       }
     } else {
+      element = element.replace(/ wa /g, "ha");
+      element = element.replace(/ o /g, "ha");
       parsedHiragana += " " + toKana(element);
     }
     parsedHiragana += "\n";
