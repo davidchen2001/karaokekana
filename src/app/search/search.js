@@ -36,10 +36,13 @@ function Search() {
       });
       return response;
     };
-    getData().then((data) => {
-      console.log(data);
-      const route = `${song}-${artist}`;
-      router.push("song/" + route);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        getData().then((data) => {
+          const route = `${song}-${artist}`;
+          router.push("song/" + route);
+        });
+      }, 3000);
     });
   };
 
@@ -64,6 +67,7 @@ function Search() {
               mt={4}
               colorScheme="teal"
               isLoading={isSubmitting}
+              isDisabled={isSubmitting}
               type="submit"
             >
               Search

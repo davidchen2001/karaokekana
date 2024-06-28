@@ -61,7 +61,8 @@ export async function GET(request) {
 
     const introIndex = romaji.indexOf(INTRO);
     const romajiToConvert = romaji.substring(introIndex);
-    const hiragana = parseHiragana(romajiToConvert);
+    const parsedHiragana = parseHiragana(romajiToConvert);
+    const hiragana = romaji.substring(0, introIndex) + "\n" + parsedHiragana;
 
     const lyrics = {
       kanji: kanji,
