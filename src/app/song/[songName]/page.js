@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Sidebar from "../../sidebar/sidebar";
 
 import {
   Center,
@@ -11,6 +12,8 @@ import {
   Tab,
   Stack,
   Text,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 
 import { useParams } from "next/navigation";
@@ -52,35 +55,40 @@ function Song() {
     });
   }, []);
   return (
-    <div>
-      <Center>
-        <Tabs>
-          <Center>
-            <TabList>
-              <Tab>Hiragana</Tab>
-              <Tab>Romanji</Tab>
-              <Tab>Kanji</Tab>
-            </TabList>
-          </Center>
+    <Grid>
+      <GridItem rowSpan={2} colSpan={1}>
+        <Sidebar />
+      </GridItem>
+      <GridItem rowSpan={2} colSpan={2}>
+        <Center>
+          <Tabs>
+            <Center>
+              <TabList>
+                <Tab>Hiragana</Tab>
+                <Tab>Romanji</Tab>
+                <Tab>Kanji</Tab>
+              </TabList>
+            </Center>
 
-          <TabPanels>
-            <Center>
-              <TabPanel>
-                <Stack>{formatLyrics(hiragana)}</Stack>
-              </TabPanel>
-            </Center>
-            <Center>
-              <TabPanel>
-                <Stack>{formatLyrics(romaji)}</Stack>
-              </TabPanel>
-            </Center>
-            <Center>
-              <TabPanel>{formatLyrics(kanji)}</TabPanel>
-            </Center>
-          </TabPanels>
-        </Tabs>
-      </Center>
-    </div>
+            <TabPanels>
+              <Center>
+                <TabPanel>
+                  <Stack>{formatLyrics(hiragana)}</Stack>
+                </TabPanel>
+              </Center>
+              <Center>
+                <TabPanel>
+                  <Stack>{formatLyrics(romaji)}</Stack>
+                </TabPanel>
+              </Center>
+              <Center>
+                <TabPanel>{formatLyrics(kanji)}</TabPanel>
+              </Center>
+            </TabPanels>
+          </Tabs>
+        </Center>
+      </GridItem>
+    </Grid>
   );
 }
 
