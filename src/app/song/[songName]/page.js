@@ -43,15 +43,23 @@ function Song() {
     <div>
       <Center>
         <Tabs>
-          <TabList>
-            <Tab>Hiragana</Tab>
-            <Tab>Romanji</Tab>
-            <Tab>Kanji</Tab>
-          </TabList>
+          <Center>
+            <TabList>
+              <Tab>Hiragana</Tab>
+              <Tab>Romanji</Tab>
+              <Tab>Kanji</Tab>
+            </TabList>
+          </Center>
           <TabPanels>
-            <TabPanel>{hiragana}</TabPanel>
-            <TabPanel>{romaji}</TabPanel>
-            <TabPanel>{kanji}</TabPanel>
+            <Center>
+              <TabPanel>{hiragana}</TabPanel>
+            </Center>
+            <Center>
+              <TabPanel>{romaji}</TabPanel>
+            </Center>
+            <Center>
+              <TabPanel>{kanji}</TabPanel>
+            </Center>
           </TabPanels>
         </Tabs>
       </Center>

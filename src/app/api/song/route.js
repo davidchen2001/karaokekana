@@ -3,7 +3,6 @@ const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 import { NextResponse } from "next/server";
 import { getLyrics } from "genius-lyrics-api";
 import { toKana } from "wanakana";
-const wordExists = require("word-exists");
 const Languages = require("languages.io");
 const language = new Languages();
 
