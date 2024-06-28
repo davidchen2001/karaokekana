@@ -2,9 +2,43 @@ const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 
 import { NextResponse } from "next/server";
 import { getLyrics } from "genius-lyrics-api";
+import { toKana } from "wanakana";
+const wordExists = require("word-exists");
+const Languages = require("languages.io");
+const language = new Languages();
 
 const Genius = require("genius-lyrics");
-const Client = new Genius.Client(); // Scrapes if no key is provided
+const Client = new Genius.Client();
+const INTRO = "[Intro]";
+
+function parseHiragana(romaji) {
+  const words = romaji.split(/\n/);
+  let parsedHiragana = "";
+  words.forEach((element) => {
+    if (
+      element.includes("[") ||
+      element.includes("]") ||
+      language.isEnglish(element)
+    ) {
+      if (element.includes("(") && element.includes(")")) {
+        parsedHiragana += toKana(element.substring(0, element.indexOf("(")));
+        parsedHiragana += element.substring(
+          element.indexOf("("),
+          element.indexOf(")")
+        );
+        parsedHiragana += toKana(
+          element.substring(element.indexOf(")"), element.length)
+        );
+      } else {
+        parsedHiragana += " " + element;
+      }
+    } else {
+      parsedHiragana += " " + toKana(element);
+    }
+  });
+
+  return parsedHiragana;
+}
 
 export async function GET(request) {
   const title = request.nextUrl.searchParams.get("title");
@@ -25,9 +59,14 @@ export async function GET(request) {
 
     const romaji = await firstSong.lyrics();
 
+    const introIndex = romaji.indexOf(INTRO);
+    const romajiToConvert = romaji.substring(introIndex);
+    const hiragana = parseHiragana(romajiToConvert);
+
     const lyrics = {
       kanji: kanji,
       romaji: romaji,
+      hiragana: hiragana,
     };
 
     return NextResponse.json({ id: 200, text: lyrics });

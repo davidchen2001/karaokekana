@@ -11,8 +11,6 @@ import {
   Tab,
 } from "@chakra-ui/react";
 
-import { toKana, isRomaji } from "wanakana";
-
 import { useParams } from "next/navigation";
 
 function Song() {
@@ -21,7 +19,6 @@ function Song() {
   const param = JSON.stringify(params["songName"]);
   const song = param.split("-")[0].replace('"', "");
   const artist = param.split("-")[1].replace('"', "");
-  const INTRO = "[INTRO]";
 
   const [hiragana, setHiragana] = useState("");
   const [romaji, setRomaji] = useState("");
@@ -36,14 +33,9 @@ function Song() {
     getData().then((data) => {
       const kanji = data.text.kanji;
       const romaji = data.text.romaji;
+      const hiragana = data.text.hiragana;
       setKanji(kanji);
       setRomaji(romaji);
-
-      const introIndex = romaji.indexOf(INTRO);
-      const romajiToConvert = romaji.substring(introIndex);
-      console.log(romajiToConvert);
-
-      const hiragana = toKana(romajiToConvert);
       setHiragana(hiragana);
     });
   }, []);
