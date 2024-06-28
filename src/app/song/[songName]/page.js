@@ -9,6 +9,11 @@ import {
   TabPanels,
   Tabs,
   Tab,
+  Card,
+  CardFooter,
+  CardBody,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
 
 import { useParams } from "next/navigation";
@@ -23,6 +28,20 @@ function Song() {
   const [hiragana, setHiragana] = useState("");
   const [romaji, setRomaji] = useState("");
   const [kanji, setKanji] = useState("");
+
+  function formatLyrics(lyrics) {
+    const lines = lyrics.split("\n");
+    let finalLyrics = [];
+    lines.forEach((line) => {
+      finalLyrics.push(
+        <Stack>
+          <Text>{line}</Text>
+        </Stack>
+      );
+    });
+
+    return finalLyrics;
+  }
 
   useEffect(() => {
     const getData = async () => {
@@ -50,15 +69,20 @@ function Song() {
               <Tab>Kanji</Tab>
             </TabList>
           </Center>
+
           <TabPanels>
             <Center>
-              <TabPanel>{hiragana}</TabPanel>
+              <TabPanel>
+                <Stack>{formatLyrics(hiragana)}</Stack>
+              </TabPanel>
             </Center>
             <Center>
-              <TabPanel>{romaji}</TabPanel>
+              <TabPanel>
+                <Stack>{formatLyrics(romaji)}</Stack>
+              </TabPanel>
             </Center>
             <Center>
-              <TabPanel>{kanji}</TabPanel>
+              <TabPanel>{formatLyrics(kanji)}</TabPanel>
             </Center>
           </TabPanels>
         </Tabs>

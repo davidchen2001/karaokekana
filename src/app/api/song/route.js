@@ -34,6 +34,7 @@ function parseHiragana(romaji) {
     } else {
       parsedHiragana += " " + toKana(element);
     }
+    parsedHiragana += "\n";
   });
 
   return parsedHiragana;

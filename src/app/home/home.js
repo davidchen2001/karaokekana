@@ -9,7 +9,7 @@ export default function home() {
       <Stack>
         <Center>
           Search for Japanese songs. Lyrics available in Hiragana, Romanji, and
-          Kanji
+          Kanji.
         </Center>
         <Center>
           <Search />
