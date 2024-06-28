@@ -39,7 +39,7 @@ function Search() {
     getData().then((data) => {
       console.log(data);
       const route = `${song}-${artist}`;
-      //router.push("song/" + route);
+      router.push("song/" + route);
     });
   };
 

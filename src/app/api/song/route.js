@@ -1,13 +1,10 @@
 const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 
 import { NextResponse } from "next/server";
-import { getLyrics, getSong } from "genius-lyrics-api";
-import { convert } from "jp-conversion";
+import { getLyrics } from "genius-lyrics-api";
 
-import Kuroshiro from "kuroshiro";
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
-
-const kuroshiro = new Kuroshiro();
+const Genius = require("genius-lyrics");
+const Client = new Genius.Client(); // Scrapes if no key is provided
 
 export async function GET(request) {
   const title = request.nextUrl.searchParams.get("title");
@@ -22,20 +19,15 @@ export async function GET(request) {
 
   try {
     const kanji = await getLyrics(options);
-    await kuroshiro.init(new KuromojiAnalyzer());
 
-    const hiragana = await kuroshiro.convert(kanji, {
-      to: "hiragana",
-    });
+    const searches = await Client.songs.search(title);
+    const firstSong = searches[0];
 
-    const romaji = await kuroshiro.convert(kanji, {
-      to: "romaji",
-    });
+    const romaji = await firstSong.lyrics();
 
     const lyrics = {
       kanji: kanji,
-      hiragana: hiragana,
-      romanji: romaji,
+      romaji: romaji,
     };
 
     return NextResponse.json({ id: 200, text: lyrics });
