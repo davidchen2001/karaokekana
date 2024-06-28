@@ -9,9 +9,6 @@ import {
   TabPanels,
   Tabs,
   Tab,
-  Card,
-  CardFooter,
-  CardBody,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -33,11 +30,7 @@ function Song() {
     const lines = lyrics.split("\n");
     let finalLyrics = [];
     lines.forEach((line) => {
-      finalLyrics.push(
-        <Stack>
-          <Text>{line}</Text>
-        </Stack>
-      );
+      finalLyrics.push(<Text>{line}</Text>);
     });
 
     return finalLyrics;
