@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getLyrics } from "genius-lyrics-api";
 import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
 const Genius = require("genius-lyrics");
@@ -8,6 +7,8 @@ const language = new Languages();
 const Client = new Genius.Client();
 const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 const INTRO = "[Intro]";
+const ROMANIZED = "romanized";
+const ENGLISH = "english";
 
 function parseHiragana(romaji) {
   const lines = romaji.split(/\n/);
@@ -41,6 +42,25 @@ function parseHiragana(romaji) {
   return parsedHiragana;
 }
 
+function findRomanizedSong(searches) {
+  for (let i = 0; i < searches.length; i++) {
+    if (searches[i].fullTitle.toLowerCase().includes(ROMANIZED)) {
+      return searches[i];
+    }
+  }
+}
+
+function findKanjiSong(searches) {
+  for (let i = 0; i < searches.length; i++) {
+    if (
+      !searches[i].fullTitle.toLowerCase().includes(ROMANIZED) &&
+      !searches[i].fullTitle.toLowerCase().includes(ENGLISH)
+    ) {
+      return searches[i];
+    }
+  }
+}
+
 export async function GET(request) {
   const title = request.nextUrl.searchParams.get("title");
   const artist = request.nextUrl.searchParams.get("artist");
@@ -53,12 +73,22 @@ export async function GET(request) {
   };
 
   try {
-    const kanji = await getLyrics(options);
+    let clientQuery = title + ", " + artist;
+    let searches = await Client.songs.search(clientQuery);
 
-    const searches = await Client.songs.search(title);
-    const firstSong = searches[0];
+    if (searches.length === 0) {
+      return NextResponse.json({ id: 404, text: "Song not found" });
+    }
 
-    const romaji = await firstSong.lyrics();
+    const kanjiSong = findKanjiSong(searches);
+    const kanji = await kanjiSong.lyrics();
+
+    clientQuery += ", " + ROMANIZED;
+    searches = await Client.songs.search(clientQuery);
+
+    const romanizedSong = findRomanizedSong(searches);
+
+    const romaji = await romanizedSong.lyrics();
 
     const introIndex = romaji.indexOf(INTRO);
     const romajiToConvert = romaji.substring(introIndex);
