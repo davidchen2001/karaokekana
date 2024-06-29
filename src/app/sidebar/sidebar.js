@@ -13,15 +13,11 @@ import {
   Drawer,
   DrawerContent,
   useDisclosure,
-  Center,
 } from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
 
-const LinkItems = [
-  { name: "Search", icon: SearchIcon, route: "/" },
-  { name: "About", icon: InfoIcon, route: "/about" },
-];
+const LinkItems = [{ name: "Search", icon: SearchIcon, route: "/" }, ,];
 
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
