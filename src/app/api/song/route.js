@@ -1,13 +1,12 @@
-const accessToken = process.env.GENIUS_ACCESS_TOKEN;
-
 import { NextResponse } from "next/server";
 import { getLyrics } from "genius-lyrics-api";
 import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
-const language = new Languages();
-
 const Genius = require("genius-lyrics");
+
+const language = new Languages();
 const Client = new Genius.Client();
+const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 const INTRO = "[Intro]";
 
 function parseHiragana(romaji) {
