@@ -19,8 +19,8 @@ import {
 import { useRouter } from "next/navigation";
 
 const LinkItems = [
-  { name: "Search", icon: SearchIcon, link: "" },
-  { name: "About", icon: InfoIcon, link: "about" },
+  { name: "Search", icon: SearchIcon, route: "/" },
+  { name: "About", icon: InfoIcon, route: "/about" },
 ];
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -35,7 +35,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       {...rest}
     >
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} route={link.route}>
           {link.name}
         </NavItem>
       ))}
@@ -43,13 +43,20 @@ const SidebarContent = ({ onClose, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ icon, children, route, ...rest }) => {
+  const router = useRouter();
+  const onClick = () => {
+    console.log(route);
+    router.replace(route);
+  };
+
   return (
     <Box
       as="a"
       href="#"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
+      onClick={onClick}
     >
       <Flex
         align="center"

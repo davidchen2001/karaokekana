@@ -2,8 +2,8 @@ import "./App.css";
 
 import { ChakraProvider } from "@chakra-ui/react";
 
-import Home from "./components/Home/Home.js";
-import Song from "./components/Song/Song.js";
+import Home from "./app/home/home.js";
+import About from "./app/about/about.js";
 
 import {
   Route,
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/song",
-    element: <Song />,
+    path: "/about",
+    element: <About />,
   },
 ]);
 
