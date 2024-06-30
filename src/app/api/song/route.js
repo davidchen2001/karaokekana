@@ -33,7 +33,7 @@ function parseHiragana(romaji) {
       }
     } else {
       element = element.replace(/ wa /g, "ha");
-      element = element.replace(/ o /g, "ha");
+      element = element.replace(/ o /g, "wo");
       parsedHiragana += " " + toKana(element);
     }
     parsedHiragana += "\n";
