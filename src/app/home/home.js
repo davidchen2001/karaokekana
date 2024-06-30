@@ -5,7 +5,7 @@ import Sidebar from "../sidebar/sidebar";
 import {
   Box,
   Center,
-  Stack,
+  VStack,
   Grid,
   GridItem,
   Container,
@@ -19,17 +19,15 @@ function Home() {
           <Sidebar />
         </GridItem>
         <GridItem rowSpan={2} colSpan={2} ml={{ base: 0, md: 60 }} p="4">
-          <Stack spacing={6}>
-            <Container>
-              <Center mt={2}>
-                Search for Japanese songs. Lyrics available in Hiragana, Romaji,
-                and Kanji.
-              </Center>
-              <Center>
-                <Search />
-              </Center>
-            </Container>
-          </Stack>
+          <VStack spacing={5}>
+            <Center mt={2}>
+              Search for Japanese songs. Lyrics available in Hiragana, Romaji,
+              and Kanji.
+            </Center>
+            <Center>
+              <Search />
+            </Center>
+          </VStack>
         </GridItem>
       </Grid>
     </Box>
