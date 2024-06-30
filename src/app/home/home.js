@@ -22,8 +22,8 @@ function Home() {
           <Stack spacing={6}>
             <Container>
               <Center mt={2}>
-                Search for Japanese songs. Lyrics available in Hiragana,
-                Romanji, and Kanji.
+                Search for Japanese songs. Lyrics available in Hiragana, Romaji,
+                and Kanji.
               </Center>
               <Center>
                 <Search />

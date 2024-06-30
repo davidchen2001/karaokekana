@@ -65,7 +65,7 @@ function Song() {
             <Center>
               <TabList>
                 <Tab>Hiragana</Tab>
-                <Tab>Romanji</Tab>
+                <Tab>Romaji</Tab>
                 <Tab>Kanji</Tab>
               </TabList>
             </Center>
