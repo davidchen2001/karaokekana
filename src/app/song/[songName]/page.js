@@ -59,7 +59,7 @@ function Song() {
       <GridItem rowSpan={2} colSpan={1}>
         <Sidebar />
       </GridItem>
-      <GridItem rowSpan={2} colSpan={2}>
+      <GridItem rowSpan={2} colSpan={2} ml={{ base: 0, md: 60 }} p="4">
         <Center>
           <Tabs>
             <Center>

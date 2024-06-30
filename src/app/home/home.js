@@ -18,10 +18,10 @@ function Home() {
         <GridItem rowSpan={2} colSpan={1}>
           <Sidebar />
         </GridItem>
-        <GridItem rowSpan={2} colSpan={2}>
+        <GridItem rowSpan={2} colSpan={2} ml={{ base: 0, md: 60 }} p="4">
           <Stack spacing={6}>
             <Container>
-              <Center>
+              <Center mt={2}>
                 Search for Japanese songs. Lyrics available in Hiragana,
                 Romanji, and Kanji.
               </Center>
