@@ -65,13 +65,6 @@ export async function GET(request) {
   const title = request.nextUrl.searchParams.get("title");
   const artist = request.nextUrl.searchParams.get("artist");
 
-  const options = {
-    apiKey: accessToken,
-    title: title,
-    artist: artist,
-    optimizeQuery: true,
-  };
-
   try {
     let clientQuery = title + ", " + artist;
     let searches = await Client.songs.search(clientQuery);
