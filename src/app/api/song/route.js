@@ -3,9 +3,11 @@ import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
 const Genius = require("genius-lyrics");
 
+import { auth } from "./auth";
+import Song from "../../../model/Song";
+
 const language = new Languages();
 const Client = new Genius.Client();
-const accessToken = process.env.GENIUS_ACCESS_TOKEN;
 const INTRO = "[Intro]";
 const ROMANIZED = "romanized";
 const ENGLISH = "english";
@@ -98,4 +100,44 @@ export async function GET(request) {
   } catch (err) {
     return NextResponse.json({ id: 500, text: err });
   }
+}
+
+export async function POST(request) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return new NextResponse(`You are not authenticated!`, {
+      status: 500,
+    });
+  }
+
+  await dbConnect();
+
+  const { title, artist, hiragana, romaji, kanji } = await request.json();
+
+  const query = {
+      $set: {
+        title: title,
+        artist: artist,
+        hiragana: hiragana,
+        romaji: romaji,
+        kanji: kanji,
+      },
+    },
+    update = { expire: new Date() },
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+  // Find the document
+
+  try {
+    await Song.findOneAndUpdate(query, update, options);
+  } catch (err) {
+    return new NextResponse(error.mesage, {
+      status: 500,
+    });
+  }
+
+  return new NextResponse("User has been created", {
+    status: 201,
+  });
 }
