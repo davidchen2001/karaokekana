@@ -14,10 +14,44 @@ import {
 
 import Sidebar from "../sidebar/sidebar";
 
+import { doCredentialLogin } from "../actions";
+
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  async function onSubmit(event) {
+    const formData = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await doCredentialLogin(formData);
+
+      if (!!response.error) {
+        console.error(response.error);
+        setError(response.error.message);
+      } else {
+        router.push("/song/submit");
+      }
+    } catch (e) {
+      console.error(e);
+      setError("Check your Credentials");
+    }
+  }
 
   return (
     <Box p={4}>
@@ -34,7 +68,7 @@ function Login() {
               alignItems="center"
             >
               <Box minW={{ base: "90%", md: "468px" }}>
-                <form>
+                <form onSubmit={onSubmit}>
                   <Stack
                     spacing={4}
                     p="1rem"
@@ -43,7 +77,10 @@ function Login() {
                   >
                     <FormControl>
                       <InputGroup>
-                        <Input placeholder="Username" />
+                        <Input
+                          placeholder="Username"
+                          onChange={handleUsernameChange}
+                        />
                       </InputGroup>
                     </FormControl>
                     <FormControl>
@@ -51,6 +88,7 @@ function Login() {
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="Password"
+                          onChange={handlePasswordChange}
                         />
                         <InputRightElement width="4.5rem">
                           <Button

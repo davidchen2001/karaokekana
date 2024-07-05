@@ -133,13 +133,13 @@ export async function POST(request) {
   try {
     await Song.findOneAndUpdate(query, update, options);
   } catch (err) {
-    return new NextResponse.json({
+    return NextResponse.json({
       id: 500,
       text: err,
     });
   }
 
-  return new NextResponse.json({
+  return NextResponse.json({
     id: 201,
     text: "Song has been updated",
   });

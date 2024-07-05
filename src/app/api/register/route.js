@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { User } from "../../../model/User";
 
-import bcrypt from "bcryptjs";
+import bcrypt, { hash } from "bcryptjs";
 import { dbConnect } from "../../../lib/db";
 
 const SALT_ROUNDS = 5;
@@ -11,20 +11,21 @@ export const POST = async (request) => {
 
   await dbConnect();
 
-  const hashedPassword = bcrypt.hash(password, SALT_ROUNDS);
-
-  const newUser = {
-    username: username,
-    password: hashedPassword,
-  };
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
   try {
-    await User.create(newUser);
+    await User.findOneAndUpdate(
+      { username: username },
+      {
+        $setOnInsert: { password: hashedPassword },
+      },
+      { upsert: true }
+    );
   } catch (err) {
-    return new NextResponse({ id: 500, text: err });
+    return NextResponse({ id: 500, text: err });
   }
 
-  return new NextResponse.json({
+  return NextResponse.json({
     id: 201,
     text: "User has been added",
   });
