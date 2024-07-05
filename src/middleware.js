@@ -16,7 +16,7 @@ export async function middleware(request) {
   );
 
   if (!isAuthenticated && isProtectedRoute)
-    return NextResponse.redirect(new URL(LOGIN, nextUrl));
+    return NextResponse.redirect(new URL(ROOT, nextUrl));
 }
 
 export const config = {

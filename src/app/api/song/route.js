@@ -3,7 +3,7 @@ import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
 const Genius = require("genius-lyrics");
 
-import { auth } from "./auth";
+import { auth } from "../../../auth";
 import Song from "../../../model/Song";
 
 const language = new Languages();
