@@ -106,8 +106,9 @@ export async function POST(request) {
   const session = await auth();
 
   if (!session?.user) {
-    return new NextResponse(`You are not authenticated!`, {
-      status: 500,
+    return new NextResponse.json({
+      id: 500,
+      text: "You are not authenticated.",
     });
   }
 
@@ -132,12 +133,14 @@ export async function POST(request) {
   try {
     await Song.findOneAndUpdate(query, update, options);
   } catch (err) {
-    return new NextResponse(error.mesage, {
-      status: 500,
+    return new NextResponse.json({
+      id: 500,
+      text: err,
     });
   }
 
-  return new NextResponse("User has been created", {
-    status: 201,
+  return new NextResponse.json({
+    id: 201,
+    text: "Song has been updated",
   });
 }

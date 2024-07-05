@@ -21,12 +21,11 @@ export const POST = async (request) => {
   try {
     await User.create(newUser);
   } catch (err) {
-    return new NextResponse(error.mesage, {
-      status: 500,
-    });
+    return new NextResponse({ id: 500, text: err });
   }
 
-  return new NextResponse("User has been created", {
-    status: 201,
+  return new NextResponse.json({
+    id: 201,
+    text: "User has been added",
   });
 };

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { authConfig } from "./authConfig";
+import { authConfig } from "./auth.config";
 import NextAuth from "next-auth";
 
 const { auth } = NextAuth(authConfig);
 
-import { ROOT, PROTECTED_SUB_ROUTES } from "./lib/routes";
+import { ROOT, PROTECTED_SUB_ROUTES, PUBLIC_ROUTES } from "./lib/routes";
 
 export async function middleware(request) {
   const { nextUrl } = request;
@@ -15,12 +15,10 @@ export async function middleware(request) {
     nextUrl.pathname.startsWith(route)
   );
 
-  console.log(isPublicRoute);
-
   if (!isAuthenticated && isProtectedRoute)
-    return NextResponse.redirect(new URL(ROOT, nextUrl));
+    return NextResponse.redirect(new URL(LOGIN, nextUrl));
 }
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: "/song/submit",
 };
