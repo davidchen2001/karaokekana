@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Flex,
   Input,
@@ -11,16 +12,16 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
+import { signIn } from "next-auth/react";
 
 import Sidebar from "../sidebar/sidebar";
-
-import { doCredentialLogin } from "../actions";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -33,24 +34,19 @@ function Login() {
   };
 
   async function onSubmit(event) {
+    event.preventDefault();
+
     const formData = {
       username: username,
       password: password,
     };
 
-    try {
-      const response = await doCredentialLogin(formData);
+    signIn("credentials", {
+      ...formData,
+      redirect: false,
+    });
 
-      if (!!response.error) {
-        console.error(response.error);
-        setError(response.error.message);
-      } else {
-        router.push("/song/submit");
-      }
-    } catch (e) {
-      console.error(e);
-      setError("Check your Credentials");
-    }
+    router.push("/song/submit");
   }
 
   return (
