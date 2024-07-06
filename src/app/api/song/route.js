@@ -5,6 +5,8 @@ const Genius = require("genius-lyrics");
 
 import { auth } from "../../../auth";
 import Song from "../../../model/Song";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const language = new Languages();
 const Client = new Genius.Client();
@@ -102,8 +104,8 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
-  const session = await auth();
+export async function POST(request, response) {
+  const session = await getServerSession(request, response, authOptions);
 
   if (!session?.user) {
     return new NextResponse.json({

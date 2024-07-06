@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-
+import React, { useEffect } from "react";
 import Sidebar from "../../sidebar/sidebar";
 
 import {
@@ -14,7 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-function Submit() {
+async function Submit() {
   return (
     <Box p={4}>
       <Grid gap={6}>

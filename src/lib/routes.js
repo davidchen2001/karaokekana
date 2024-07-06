@@ -1,4 +1,5 @@
 export const ROOT = "/";
+export const LOGIN = "/login";
 
 export const PROTECTED_SUB_ROUTES = ["/song/submit"];
 
