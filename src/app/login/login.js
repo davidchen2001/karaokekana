@@ -36,16 +36,15 @@ function Login() {
   async function onSubmit(event) {
     event.preventDefault();
 
-    const formData = {
+    const data = {
       username: username,
       password: password,
     };
 
     signIn("credentials", {
-      ...formData,
+      ...data,
       redirect: false,
     });
-
     router.push("/song/submit");
   }
 

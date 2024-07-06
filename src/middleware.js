@@ -1,24 +1,10 @@
-import { NextResponse } from "next/server";
-import { authConfig } from "./auth.config";
-import NextAuth from "next-auth";
+import withAuth from "next-auth/middleware";
+import { PROTECTED_SUB_ROUTES, LOGIN } from "./lib/routes";
 
-const { auth } = NextAuth(authConfig);
-
-import { ROOT, PROTECTED_SUB_ROUTES, PUBLIC_ROUTES } from "./lib/routes";
-
-export async function middleware(request) {
-  const { nextUrl } = request;
-  const session = await auth();
-  const isAuthenticated = !!session?.user;
-
-  const isProtectedRoute = PROTECTED_SUB_ROUTES.find((route) =>
-    nextUrl.pathname.startsWith(route)
-  );
-
-  if (!isAuthenticated && isProtectedRoute)
-    return NextResponse.redirect(new URL(ROOT, nextUrl));
-}
-
-export const config = {
-  matcher: "/song/submit",
+export const pages = {
+  signIn: LOGIN,
 };
+
+export default withAuth({ pages });
+
+export const config = { matcher: ["/song/submit"] };
