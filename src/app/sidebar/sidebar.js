@@ -42,7 +42,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
 const NavItem = ({ icon, children, route, ...rest }) => {
   const router = useRouter();
   const onClick = () => {
-    console.log(route);
     router.replace(route);
   };
 
