@@ -2,8 +2,6 @@
 
 import React, { useEffect } from "react";
 import Sidebar from "../../sidebar/sidebar";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 import {
   Input,
@@ -15,18 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-async function Submit() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const securePage = async () => {
-      const session = await getSession();
-      if (!session) {
-        router.replace("/");
-      }
-    };
-    securePage();
-  }, []);
+function Submit() {
   return (
     <Box p={4}>
       <Grid gap={6}>

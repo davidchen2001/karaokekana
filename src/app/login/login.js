@@ -13,6 +13,7 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 import Sidebar from "../sidebar/sidebar";
 
