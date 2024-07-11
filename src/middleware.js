@@ -1,16 +1,12 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-import { getSession } from "./lib/tokenAction";
-import { PROTECTED_SUB_ROUTES } from "./lib/routes";
 
-export async function middleware(request) {
-  const { nextUrl } = request;
-  const currentSession = await getSession();
-  const isProtectedRoute = PROTECTED_SUB_ROUTES.find((route) =>
-    nextUrl.pathname.startsWith(route)
-  );
+const secret = process.env.NEXTAUTH_JWT_SECRET;
 
-  if (!currentSession && isProtectedRoute) {
-    console.log("REDIRECT");
+export default async function middleware(req) {
+  const { nextUrl } = req;
+  const token = await getToken({ req, secret });
+  if (!token) {
     return NextResponse.redirect(new URL("/", nextUrl));
   }
 }
