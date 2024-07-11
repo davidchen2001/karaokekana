@@ -115,6 +115,13 @@ export async function GET(request) {
 
         const romanizedSong = findRomanizedSong(searches);
 
+        if (!romanizedSong) {
+          const lyrics = {
+            kanji: kanji,
+          };
+          return NextResponse.json({ id: 200, text: lyrics });
+        }
+
         const romaji = await romanizedSong.lyrics();
 
         const introIndex = romaji.indexOf(INTRO);
