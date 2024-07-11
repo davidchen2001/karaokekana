@@ -47,11 +47,17 @@ function Song() {
     };
     getData().then((data) => {
       const kanji = data.text.kanji;
-      const romaji = data.text.romaji;
-      const hiragana = data.text.hiragana;
       setKanji(kanji);
-      setRomaji(romaji);
-      setHiragana(hiragana);
+
+      if (data.text.romaji) {
+        const romaji = data.text.romaji;
+        setRomaji(romaji);
+      }
+
+      if (data.text.hiragana) {
+        const hiragana = data.text.hiragana;
+        setHiragana(hiragana);
+      }
     });
   }, []);
   return (
@@ -60,33 +66,39 @@ function Song() {
         <Sidebar />
       </GridItem>
       <GridItem rowSpan={2} colSpan={2} ml={{ base: 0, md: 60 }} p="4">
-        <Center>
-          <Tabs>
-            <Center>
-              <TabList>
-                <Tab>Hiragana</Tab>
-                <Tab>Romaji</Tab>
-                <Tab>Kanji</Tab>
-              </TabList>
-            </Center>
+        {romaji !== "" ? (
+          <Center>
+            <Tabs>
+              <Center>
+                <TabList>
+                  <Tab>Hiragana</Tab>
+                  <Tab>Romaji</Tab>
+                  <Tab>Kanji</Tab>
+                </TabList>
+              </Center>
 
-            <TabPanels>
-              <Center>
-                <TabPanel>
-                  <Stack>{formatLyrics(hiragana)}</Stack>
-                </TabPanel>
-              </Center>
-              <Center>
-                <TabPanel>
-                  <Stack>{formatLyrics(romaji)}</Stack>
-                </TabPanel>
-              </Center>
-              <Center>
-                <TabPanel>{formatLyrics(kanji)}</TabPanel>
-              </Center>
-            </TabPanels>
-          </Tabs>
-        </Center>
+              <TabPanels>
+                <Center>
+                  <TabPanel>
+                    <Stack>{formatLyrics(hiragana)}</Stack>
+                  </TabPanel>
+                </Center>
+                <Center>
+                  <TabPanel>
+                    <Stack>{formatLyrics(romaji)}</Stack>
+                  </TabPanel>
+                </Center>
+                <Center>
+                  <TabPanel>{formatLyrics(kanji)}</TabPanel>
+                </Center>
+              </TabPanels>
+            </Tabs>
+          </Center>
+        ) : (
+          <Center>
+            <Stack>{formatLyrics(kanji)}</Stack>
+          </Center>
+        )}
       </GridItem>
     </Grid>
   );

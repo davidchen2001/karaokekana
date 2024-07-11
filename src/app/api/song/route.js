@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt";
 import { dbConnect } from "../../../lib/db";
 const Languages = require("languages.io");
 const Genius = require("genius-lyrics");
+const japaneseCharacters = require("japanese-characters");
 
 const secret = process.env.NEXTAUTH_JWT_SECRET;
 
@@ -106,25 +107,35 @@ export async function GET(request) {
       const kanjiSong = findKanjiSong(searches);
       const kanji = await kanjiSong.lyrics();
 
-      clientQuery += ", " + ROMANIZED;
-      searches = await Client.songs.search(clientQuery);
+      const kanaPresent = japaneseCharacters.presentIn(kanji);
 
-      const romanizedSong = findRomanizedSong(searches);
+      if (kanaPresent) {
+        clientQuery += ", " + ROMANIZED;
+        searches = await Client.songs.search(clientQuery);
 
-      const romaji = await romanizedSong.lyrics();
+        const romanizedSong = findRomanizedSong(searches);
 
-      const introIndex = romaji.indexOf(INTRO);
-      const romajiToConvert = romaji.substring(introIndex);
-      const parsedHiragana = parseHiragana(romajiToConvert);
-      const hiragana = romaji.substring(0, introIndex) + "\n" + parsedHiragana;
+        const romaji = await romanizedSong.lyrics();
 
-      const lyrics = {
-        kanji: kanji,
-        romaji: romaji,
-        hiragana: hiragana,
-      };
+        const introIndex = romaji.indexOf(INTRO);
+        const romajiToConvert = romaji.substring(introIndex);
+        const parsedHiragana = parseHiragana(romajiToConvert);
+        const hiragana =
+          romaji.substring(0, introIndex) + "\n" + parsedHiragana;
 
-      return NextResponse.json({ id: 200, text: lyrics });
+        const lyrics = {
+          kanji: kanji,
+          romaji: romaji,
+          hiragana: hiragana,
+        };
+
+        return NextResponse.json({ id: 200, text: lyrics });
+      } else {
+        const lyrics = {
+          kanji: kanji,
+        };
+        return NextResponse.json({ id: 200, text: lyrics });
+      }
     } catch (err) {
       return NextResponse.json({ id: 500, text: err });
     }
