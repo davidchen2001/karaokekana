@@ -3,9 +3,11 @@ import { toKana, isRomaji } from "wanakana";
 const Languages = require("languages.io");
 const Genius = require("genius-lyrics");
 
-import Song from "../../../model/Song";
-import { authOptions } from "../auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
+import { Song } from "../../../model/Song";
+import { getToken } from "next-auth/jwt";
+import { dbConnect } from "../../../lib/db";
+
+const secret = process.env.NEXTAUTH_JWT_SECRET;
 
 const language = new Languages();
 const Client = new Genius.Client();
@@ -103,37 +105,32 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request, response) {
-  const session = await getServerSession(request, response, authOptions);
+export async function POST(req, res) {
+  const token = await getToken({ req, secret });
 
-  if (!session?.user) {
-    return new NextResponse.json({
-      id: 500,
+  if (!token) {
+    return NextResponse.json({
+      id: 401,
       text: "You are not authenticated.",
     });
   }
 
   await dbConnect();
 
-  const { title, artist, hiragana, romaji, kanji } = await request.json();
+  const { title, artist, hiragana, romaji, kanji } = await req.json();
 
-  const query = {
-      $set: {
-        title: title,
-        artist: artist,
-        hiragana: hiragana,
-        romaji: romaji,
-        kanji: kanji,
-      },
-    },
-    update = { expire: new Date() },
-    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  const filter = {
+    title: title,
+    artist: artist,
+  };
+  const update = { hiragana: hiragana, romaji: romaji, kanji: kanji };
+  const options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
   // Find the document
-
   try {
-    await Song.findOneAndUpdate(query, update, options);
+    await Song.findOneAndUpdate(filter, update, options);
   } catch (err) {
+    console.log(err);
     return NextResponse.json({
       id: 500,
       text: err,
