@@ -74,7 +74,7 @@ export async function GET(request) {
 
   const query = {
     $match: {
-      $or: [
+      $and: [
         {
           title: {
             $regex: title,
