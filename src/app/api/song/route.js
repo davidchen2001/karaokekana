@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import { toKana, isRomaji } from "wanakana";
-const Languages = require("languages.io");
-const Genius = require("genius-lyrics");
-
 import { Song } from "../../../model/Song";
 import { getToken } from "next-auth/jwt";
 import { dbConnect } from "../../../lib/db";
+const Languages = require("languages.io");
+const Genius = require("genius-lyrics");
 
 const secret = process.env.NEXTAUTH_JWT_SECRET;
 
@@ -70,38 +69,65 @@ export async function GET(request) {
   const title = request.nextUrl.searchParams.get("title");
   const artist = request.nextUrl.searchParams.get("artist");
 
-  try {
-    let clientQuery = title + ", " + artist;
-    let searches = await Client.songs.search(clientQuery);
+  await dbConnect();
 
-    if (searches.length === 0) {
-      return NextResponse.json({ id: 404, text: "Song not found" });
+  const query = {
+    $match: {
+      $or: [
+        {
+          title: {
+            $regex: title,
+            $options: "i",
+          },
+        },
+        {
+          artist: {
+            $regex: artist,
+            $options: "i",
+          },
+        },
+      ],
+    },
+  };
+
+  const song = await Song.aggregate([query]);
+
+  if (song.length === 1) {
+    return NextResponse.json({ id: 200, text: song[0] });
+  } else {
+    try {
+      let clientQuery = title + ", " + artist;
+      let searches = await Client.songs.search(clientQuery);
+
+      if (searches.length === 0) {
+        return NextResponse.json({ id: 404, text: "Song not found" });
+      }
+
+      const kanjiSong = findKanjiSong(searches);
+      const kanji = await kanjiSong.lyrics();
+
+      clientQuery += ", " + ROMANIZED;
+      searches = await Client.songs.search(clientQuery);
+
+      const romanizedSong = findRomanizedSong(searches);
+
+      const romaji = await romanizedSong.lyrics();
+
+      const introIndex = romaji.indexOf(INTRO);
+      const romajiToConvert = romaji.substring(introIndex);
+      const parsedHiragana = parseHiragana(romajiToConvert);
+      const hiragana = romaji.substring(0, introIndex) + "\n" + parsedHiragana;
+
+      const lyrics = {
+        kanji: kanji,
+        romaji: romaji,
+        hiragana: hiragana,
+      };
+
+      return NextResponse.json({ id: 200, text: lyrics });
+    } catch (err) {
+      return NextResponse.json({ id: 500, text: err });
     }
-
-    const kanjiSong = findKanjiSong(searches);
-    const kanji = await kanjiSong.lyrics();
-
-    clientQuery += ", " + ROMANIZED;
-    searches = await Client.songs.search(clientQuery);
-
-    const romanizedSong = findRomanizedSong(searches);
-
-    const romaji = await romanizedSong.lyrics();
-
-    const introIndex = romaji.indexOf(INTRO);
-    const romajiToConvert = romaji.substring(introIndex);
-    const parsedHiragana = parseHiragana(romajiToConvert);
-    const hiragana = romaji.substring(0, introIndex) + "\n" + parsedHiragana;
-
-    const lyrics = {
-      kanji: kanji,
-      romaji: romaji,
-      hiragana: hiragana,
-    };
-
-    return NextResponse.json({ id: 200, text: lyrics });
-  } catch (err) {
-    return NextResponse.json({ id: 500, text: err });
   }
 }
 
