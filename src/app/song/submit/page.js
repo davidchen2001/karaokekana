@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../sidebar/sidebar";
 import { useForm } from "react-hook-form";
 
@@ -12,6 +12,14 @@ import {
   Grid,
   GridItem,
   Button,
+  Table,
+  TableContainer,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  TableCaption,
+  Td,
 } from "@chakra-ui/react";
 
 function Submit() {
@@ -29,6 +37,69 @@ function Submit() {
     kanji: "",
   });
 
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const query = await fetch(`/api/report`);
+      const response = await query.json();
+      return response;
+    };
+    getData().then((data) => {
+      const reports = data.text;
+
+      setReports(reports);
+    });
+  }, []);
+
+  const onDeleteSubmit = (title, artist) => {
+    const body = {
+      title: title,
+      artist: artist,
+    };
+    const deleteSong = async () => {
+      const response = await fetch(`/api/report`, {
+        method: "DELETE",
+        body: JSON.stringify(body),
+      });
+      return response;
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        deleteSong().then((response) => {
+          alert("Song has been successfully deleted");
+          reset();
+        });
+      }, 3000);
+    });
+  };
+
+  const generateReports = (reports) => {
+    let reportsRow = [];
+
+    reports.forEach((report) => {
+      reportsRow.push(
+        <Tr>
+          <Td>{report.title}</Td>
+          <Td>{report.artist}</Td>
+          <Td>
+            <Button
+              onClick={() =>
+                handleSubmit(onDeleteSubmit(report.title, report.artist))
+              }
+              isDisabled={isSubmitting}
+              isSubmitting={isSubmitting}
+            >
+              Delete
+            </Button>
+          </Td>
+        </Tr>
+      );
+    });
+
+    return reportsRow;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -38,7 +109,7 @@ function Submit() {
   };
 
   const onSubmit = () => {
-    const getData = async () => {
+    const postData = async () => {
       const response = await fetch(`/api/song`, {
         method: "POST",
         body: JSON.stringify(data),
@@ -47,7 +118,7 @@ function Submit() {
     };
     return new Promise((resolve) => {
       setTimeout(() => {
-        getData().then((response) => {
+        postData().then((response) => {
           alert("Song has been successfully updated");
           reset();
         });
@@ -110,6 +181,19 @@ function Submit() {
               >
                 Submit
               </Button>
+              <TableContainer>
+                <Table>
+                  <TableCaption>List of Reports</TableCaption>
+                  <Thead>
+                    <Tr>
+                      <Th>Song Title</Th>
+                      <Th>Song Artist </Th>
+                      <Th> Delete</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>{generateReports(reports)}</Tbody>
+                </Table>
+              </TableContainer>
             </VStack>
           </form>
         </GridItem>
