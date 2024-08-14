@@ -14,7 +14,7 @@ For intermediate Japanese learners, Kana is often easier to read than Kanji and 
    Artist: `Goose House`
 
    Song: `Snow Halation`
-   Artist: ` Muse`
+   Artist: `Muse`
 
    Song: `Gurenge`
    Artist: `LiSA`
