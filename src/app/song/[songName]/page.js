@@ -27,6 +27,8 @@ function Song() {
   const [hiragana, setHiragana] = useState("");
   const [romaji, setRomaji] = useState("");
   const [kanji, setKanji] = useState("");
+  const [song, setSong] = useState("");
+  const [artist, setArtist] = useState("");
 
   const {
     handleSubmit,
@@ -74,6 +76,8 @@ function Song() {
       const [parsedSong, parsedArtist] = decodedSongName.split('-').map(part => part.replace(/"/g, ''));
       const query = await fetch(`/api/song?title=${parsedSong}&artist=${parsedArtist}`);
       const response = await query.json();
+      setSong(parsedSong);
+      setArtist(parsedArtist);
       return response;
     };
     getData().then((data) => {
