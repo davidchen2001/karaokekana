@@ -24,10 +24,6 @@ import { useParams } from "next/navigation";
 function Song() {
   const params = useParams();
 
-  const param = JSON.stringify(params["songName"]);
-  const song = param.split("-")[0].replace('"', "");
-  const artist = param.split("-")[1].replace('"', "");
-
   const [hiragana, setHiragana] = useState("");
   const [romaji, setRomaji] = useState("");
   const [kanji, setKanji] = useState("");
@@ -41,6 +37,7 @@ function Song() {
   function formatLyrics(lyrics) {
     const lines = lyrics.split("\n");
     let finalLyrics = [];
+    
     lines.forEach((line) => {
       finalLyrics.push(<Text>{line}</Text>);
     });
@@ -73,7 +70,9 @@ function Song() {
 
   useEffect(() => {
     const getData = async () => {
-      const query = await fetch(`/api/song?title=${song}&artist=${artist}`);
+      const decodedSongName = decodeURIComponent(params.songName);
+      const [parsedSong, parsedArtist] = decodedSongName.split('-').map(part => part.replace(/"/g, ''));
+      const query = await fetch(`/api/song?title=${parsedSong}&artist=${parsedArtist}`);
       const response = await query.json();
       return response;
     };
