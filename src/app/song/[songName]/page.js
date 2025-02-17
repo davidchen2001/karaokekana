@@ -72,7 +72,9 @@ function Song() {
 
   useEffect(() => {
     const getData = async () => {
-      const decodedSongName = decodeURIComponent(params.songName);
+      const containsJapanese = (text) => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(text);
+      const songName = params.songName;
+      const decodedSongName = containsJapanese(songName) ? decodeURIComponent(songName) : songName;
       const [parsedSong, parsedArtist] = decodedSongName.split('-').map(part => part.replace(/"/g, ''));
       const query = await fetch(`/api/song?title=${parsedSong}&artist=${parsedArtist}`);
       const response = await query.json();
