@@ -37,11 +37,15 @@ function Song() {
   } = useForm();
 
   function formatLyrics(lyrics) {
+    if (!lyrics) {
+      return [<Text key="no-lyrics">No lyrics available</Text>];
+    }
+
     const lines = lyrics.split("\n");
     let finalLyrics = [];
-    
-    lines.forEach((line) => {
-      finalLyrics.push(<Text>{line}</Text>);
+
+    lines.forEach((line, index) => {
+      finalLyrics.push(<Text key={index}>{line}</Text>);
     });
 
     return finalLyrics;
@@ -72,11 +76,18 @@ function Song() {
 
   useEffect(() => {
     const getData = async () => {
-      const containsJapanese = (text) => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(text);
+      const containsJapanese = (text) =>
+        /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(text);
       const songName = params.songName;
-      const decodedSongName = containsJapanese(songName) ? decodeURIComponent(songName) : songName;
-      const [parsedSong, parsedArtist] = decodedSongName.split('-').map(part => part.replace(/"/g, ''));
-      const query = await fetch(`/api/song?title=${parsedSong}&artist=${parsedArtist}`);
+      const decodedSongName = containsJapanese(songName)
+        ? decodeURIComponent(songName)
+        : songName;
+      const [parsedSong, parsedArtist] = decodedSongName
+        .split("-")
+        .map((part) => part.replace(/"/g, ""));
+      const query = await fetch(
+        `/api/song?title=${parsedSong}&artist=${parsedArtist}`,
+      );
       const response = await query.json();
       setSong(parsedSong);
       setArtist(parsedArtist);
@@ -103,7 +114,11 @@ function Song() {
         <Sidebar />
       </GridItem>
       <GridItem rowSpan={2} colSpan={2} ml={{ base: 0, md: 60 }} p="4">
-        {romaji !== "" ? (
+        {!kanji ? (
+          <Center>
+            <Text>Loading...</Text>
+          </Center>
+        ) : romaji !== "" ? (
           <Center>
             <Tabs>
               <Center>

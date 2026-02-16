@@ -28,10 +28,10 @@ function parseHiragana(romaji) {
         parsedHiragana += toKana(element.substring(0, element.indexOf("(")));
         parsedHiragana += element.substring(
           element.indexOf("("),
-          element.indexOf(")")
+          element.indexOf(")"),
         );
         parsedHiragana += toKana(
-          element.substring(element.indexOf(")"), element.length)
+          element.substring(element.indexOf(")"), element.length),
         );
       } else {
         parsedHiragana += " " + element;
@@ -105,6 +105,11 @@ export async function GET(request) {
       }
 
       const kanjiSong = findKanjiSong(searches);
+
+      if (!kanjiSong) {
+        return NextResponse.json({ id: 404, text: "Song not found" });
+      }
+
       const kanji = await kanjiSong.lyrics();
 
       const kanaPresent = japaneseCharacters.presentIn(kanji);
